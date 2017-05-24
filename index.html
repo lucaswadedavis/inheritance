@@ -11,14 +11,23 @@
 <script type='text/javascript' src='js/jquery-1.11.1.js'></script>
 <script type='text/javascript' src='js/underscore-1.7.0.js'></script>
 <script type='text/javascript' src='js/jquery-ui.js'></script>
-<script type='text/javascript' src='js/raphael-2.1.2.js'></script>
+<script type='text/javascript' src='lib/d3.min.js'></script>
+<script type='text/javascript' src='lib/c3.min.js'></script>
+<script type='text/javascript' src='lib/chance.js'></script>
 <script type='text/javascript' src='js/app.js'></script>
 
 <link rel='stylesheet' href='./js/jquery-ui.css' />
+<link rel='stylesheet' href='./lib/c3.min.css' />
+<style>
+  #chart {
+    min-height: 150px;
+  }
+</style>
 
 </head>
 <body>
     <h1>Inheritance</h1>
+    <div id='chart'></div>
     <div class='wrapper'>
         <h2 id='population-size-title'>Population Size</h2>
         <div class='slider' id='population-size'></div> 
