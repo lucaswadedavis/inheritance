@@ -14,33 +14,48 @@
 <script type='text/javascript' src='lib/d3.min.js'></script>
 <script type='text/javascript' src='lib/c3.min.js'></script>
 <script type='text/javascript' src='lib/chance.js'></script>
+<script type='text/javascript' src='lib/sigma.min.js'></script>
 <script type='text/javascript' src='js/app.js'></script>
 
 <link rel='stylesheet' href='./js/jquery-ui.css' />
 <link rel='stylesheet' href='./lib/c3.min.css' />
 <style>
   #chart {
-    min-height: 150px;
+    min-height: 400px;
+  }
+
+  button {
+    float: right;
+    font-size: 2em;
+    background: rgb(31, 119, 180);
+    color: #fff;
+    cursor: pointer;
+    padding: 0 30px 0 30px;
   }
 </style>
 
 </head>
 <body>
-    <h1>Inheritance</h1>
+    <div id='header'>
+      <button>Breed</button>
+      <h1>Inheritance</h1>
+    </div>
     <div id='chart'></div>
     <div class='wrapper'>
-        <h2 id='population-size-title'>Population Size</h2>
+        <h2 id='population-size-title'>Population Size: 10</h2>
         <div class='slider' id='population-size'></div> 
-        <h2 id='number-of-generations-title'>Number of Generations</h2>
+        <h2 id='number-of-generations-title'>Number of Generations: 10</h2>
         <div class='slider' id='number-of-generations'></div> 
 
-        <h2 id='heritability-title'>Heritability (0, 100)</h2>
+        <h2 id='heritability-title'>Heritability: 100%</h2>
         <div class='slider' id='heritability'></div> 
-        <h2 id='assortative-mating-title'>Assortative Mating (-100, 100)</h2>
+        <h2 id='assortative-mating-title'>Assortative Mating: 1</h2>
         <div class='slider' id='assortative-mating'></div> 
-        <h2 id='polygenaity-title'>Polygenaity (1, 100)</h2>
+        <h2 id='polygenaity-title'>Polygenaity: 5</h2>
         <div class='slider' id='polygenaity'></div> 
-        <button>Breed</button>
+        <h2 id='fecundity-title'>Fecundity: 0</h2>
+        <div class='slider' id='fecundity'></div> 
+
     </div>
     <div class='output'></div>
 
