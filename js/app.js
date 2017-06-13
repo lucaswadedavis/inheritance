@@ -20,6 +20,8 @@ function init() {
  $('#polygenaity').slider(state.polygenaity);
  $('#assortative-mating').slider(state.assortativeMating);
  $('#fecundity').slider(state.fecundity);
+ $('#carrying-capacity').slider(state.carryingCapacity);
+ $('#thanatos').slider(state.thanatos);
 
  $('button').on('click', calculate);
 }
@@ -94,7 +96,7 @@ function renderChart(generations) {
             source: node.id,
             target: node.children[i].id,
             size: 1,
-            color: '#000'
+            color: hsl2rgb(node.hue, 0.7, 0.2)
           });
         }
       }
@@ -152,6 +154,8 @@ window.state = {
   heritability: {min:0, max:100, value:80},
   assortativeMating: {min:0, max:100, value:90},
   fecundity: {min:0, max:200, value:100}
+  carryingCapacity: {min:0, max:200, value:100}
+  thanatos: {min:0, max:200, value:100}
 }
 
 state.populationSize.slide = function(event, ui) {
@@ -230,8 +234,11 @@ function selectMateAndBreed(organisms, colorize) {
   while (a.length && b.length) {
     var aM = 1 - (0.01 * state.assortativeMating.value);
     var index = Math.min(b.length - 1, Math.floor(b.length * aM));
-    nextGeneration.push(breed(a[0], b[index]));
-    nextGeneration.push(breed(a[0], b[index]));
+    var f = 0.02 * (state.fecundity.value * (a[0].phenotype + b[index].phenotype)) | 0;
+    console.log('f: ', f);
+    for (var i = 0; i < f; i++) {
+      nextGeneration.push(breed(a[0], b[index]));
+    }
     a.shift();
     b.splice(index, 1);
   }
