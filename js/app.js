@@ -1,7 +1,5 @@
 $(document).ready(function(){init();});
 
-// TODO: get the correlation coefficient during the breeding cycle.
-
 ////////////////////////////////////////////////
 
 var chance = new Chance();
@@ -20,8 +18,6 @@ function init() {
  $('#polygenaity').slider(state.polygenaity);
  $('#assortative-mating').slider(state.assortativeMating);
  $('#fecundity').slider(state.fecundity);
- $('#carrying-capacity').slider(state.carryingCapacity);
- $('#thanatos').slider(state.thanatos);
 
  $('button').on('click', calculate);
 }
@@ -70,23 +66,19 @@ function hsl2rgb(h, s, l){
 
 
 function renderChart(generations) {
-  console.log(generations);
   $('#chart').empty();
   var graph = {nodes: [], edges: []};
 
   for (var x = 0; x < generations.length; x++) {
     for (var y = 0; y < generations[x].length; y++) {
       var node = generations[x][y];
-      console.log(node.hue);
       graph.nodes.push({
         id: node.id,
         label: node.firstName + ' ' + node.lastName + ': ' + node.phenotype,
-        x: 1 + x * 5,
-        y: y,
+        x: 1 + x * 50,
+        y: 400 * (1 - node.phenotype),
         size: node.phenotype,
-        //color: '#333'
-        color: hsl2rgb(node.hue, 0.7, 0.5)
-        //color: lastNameColors[node.lastName]
+        color: hsl2rgb(node.phenotype, 0.7, 0.5)
       });
 
       if (node.children && node.children.length) {
@@ -103,48 +95,22 @@ function renderChart(generations) {
     }
   }
 
-  return new sigma({graph: graph, container: 'chart'});
-  //return renderC3Chart(generations);
-};
+  var s = new sigma({
+    container: 'chart',
+    graph: graph
+  });
 
-function renderC3Chart(generations) {
-  var uppers = ['uppers'];
-  var lowers = ['lowers'];
-  var averages = ['average'];
-  var columns = [];
-  for (var i = 0; i < generations[0].length; i++) {
-    columns.push([chance.city()]);
-  }
+  s.settings({
+    drawLabels: false
+  });
 
-  for (var i = 0; i < generations.length; i++) {
-    var generation = generations[i];
-    var upper = -Infinity;
-    var lower = Infinity;
-    var sum = 0;
-    var lineageIndex = 0;
-    for (var j = 0; j < generation.length; j++) {
-      if (generation[j].phenotype > upper) upper = generation[j].phenotype;
-      if (generation[j].phenotype < lower) lower = generation[j].phenotype;
-      sum += generation[j].phenotype;
-      columns[lineageIndex].push(generation[j].phenotype);
-      if (j % 2 === 1) lineageIndex++;
-    }
-    uppers.push(upper);
-    lowers.push(lower);
-    averages.push(sum / generation.length);
-  }
+  s.bind('clickNode', function() {
+    console.log('click', arguments);
+  });
 
-  var opts = {
-    bindTo: "#chart",
-    //subchart: {show: true},
-    data: {
-      columns: columns,
-      axis: {x: {type: 'scatter-plot'}}
-    }
-  };
-  
-  return c3.generate(opts);
+  s.refresh();
 
+  return s;
 };
 
 window.state = {
@@ -154,8 +120,6 @@ window.state = {
   heritability: {min:0, max:100, value:80},
   assortativeMating: {min:0, max:100, value:90},
   fecundity: {min:0, max:200, value:100}
-  carryingCapacity: {min:0, max:200, value:100}
-  thanatos: {min:0, max:200, value:100}
 }
 
 state.populationSize.slide = function(event, ui) {
@@ -224,6 +188,7 @@ function breed(a, b) {
 
 function selectMateAndBreed(organisms, colorize) {
   organisms.sort((a, b) => a.phenotype - b.phenotype);
+  //organisms.reverse();
   var a = [];
   var b = [];
   var nextGeneration = [];
@@ -234,11 +199,16 @@ function selectMateAndBreed(organisms, colorize) {
   while (a.length && b.length) {
     var aM = 1 - (0.01 * state.assortativeMating.value);
     var index = Math.min(b.length - 1, Math.floor(b.length * aM));
+    nextGeneration.push(breed(a[0], b[index]));
+    nextGeneration.push(breed(a[0], b[index]));
+    // This is the fecundity stuff, maybe come back to it later...
+    /*
     var f = 0.02 * (state.fecundity.value * (a[0].phenotype + b[index].phenotype)) | 0;
     console.log('f: ', f);
     for (var i = 0; i < f; i++) {
       nextGeneration.push(breed(a[0], b[index]));
     }
+    */
     a.shift();
     b.splice(index, 1);
   }
@@ -279,25 +249,19 @@ function calculate() {
     currentGeneration.push(Organism());
   }
   currentGeneration.sort((a, b) => a.phenotype - b.phenotype);
+  //currentGeneration.reverse();
   var hue = 0;
   for (var i = 0; i < currentGeneration.length; i++) {
     hue += 1 / populationSize;
     currentGeneration[i].hue = hue;
-    console.log('hue', currentGeneration[i].hue);
   }
 
 
   generations.push(currentGeneration);
   for (var i = 0; i < numberOfGenerations; i++) {
     currentGeneration = selectMateAndBreed(currentGeneration);
-    /*
-    console.log(
-      "Generation " + i,
-      currentGeneration[0].phenotype,
-      currentGeneration[currentGeneration.length - 1].phenotype
-    );
-    */
     currentGeneration.sort((a, b) => a.phenotype - b.phenotype);
+    //currentGeneration.reverse();
     generations.push(currentGeneration);
   }
 
