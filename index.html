@@ -29,6 +29,22 @@
     cursor: pointer;
     padding: 0 30px 0 30px;
   }
+ 
+  .wrapper {
+    display: flex;
+  }
+ 
+  .wrapper h2 {
+    font-size: 1.1em;
+    color: grey;
+    margin-bottom: 4px;
+  }
+
+  .container-child {
+    flex: 1;
+  }
+
+
 </style>
 
 </head>
@@ -39,17 +55,21 @@
     </div>
     <div id='chart'></div>
     <div class='wrapper'>
+      <div class='container-child'>
         <h2 id='population-size-title'>Population Size: 20</h2>
         <div class='slider' id='population-size'></div> 
         <h2 id='number-of-generations-title'>Number of Generations: 20</h2>
         <div class='slider' id='number-of-generations'></div> 
+      </div>
 
+      <div class='container-child'>
         <h2 id='heritability-title'>Heritability: 80%</h2>
         <div class='slider' id='heritability'></div> 
         <h2 id='assortative-mating-title'>Assortative Mating: 0.9</h2>
         <div class='slider' id='assortative-mating'></div> 
-        <h2 id='polygenaity-title'>Polygenaity: 8</h2>
+        <h2 id='polygenaity-title'>Polygenicity: 8</h2>
         <div class='slider' id='polygenaity'></div> 
+      </div>
     </div>
     <div class='output'></div>
 
